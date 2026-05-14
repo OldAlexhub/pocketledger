@@ -1,0 +1,16 @@
+Version 1.0.0
+
+Initial release of PocketLedger.
+
+- Dashboard with monthly income, spending, and balance overview
+- Transaction management: add, edit, delete, and categorize
+- Statement import via file picker or paste text
+- Local transaction classification engine with 19 categories
+- Budget planner with income, savings goal, and fixed bills
+- Subscription detection from imported statements
+- Spending insights and anomaly detection
+- Savings potential calculator with three scenarios
+- Monthly reports and CSV export
+- Optional App Lock with biometric or device PIN
+- Full offline operation — no internet required
+- No account, no backend, no data collection

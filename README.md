@@ -1,97 +1,230 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# PocketLedger
 
-# Getting Started
+**Private offline budget clarity for Android.**
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Import statements, understand spending, detect subscriptions, and find your savings potential privately on your phone.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## What PocketLedger Is
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+PocketLedger is a local-only budget organization app for Android. It helps you:
 
-```sh
-# Using npm
+- Import bank statement text or files and classify transactions locally
+- Track income vs. spending by month and category
+- Detect recurring subscriptions
+- Set budgets and track fixed bills
+- Identify spending anomalies and savings opportunities
+- Export reports as CSV or HTML
+- Lock the app with your device's biometric or PIN
+
+**Everything runs on your device. No backend. No account. No cloud sync.**
+
+---
+
+## What PocketLedger Is NOT
+
+- Not a bank app
+- Not a financial advisor
+- Not tax software
+- Not investment software
+- Not connected to any bank or financial institution
+- Does not upload statements
+- Does not require an internet connection
+
+---
+
+## Package
+
+```
+com.oldalexhub.pocketledger
+```
+
+---
+
+## Tech Stack
+
+- **Framework:** Bare React Native 0.85
+- **Platform:** Android only
+- **Storage:** AsyncStorage (local, on-device)
+- **Navigation:** React Navigation v7
+- **Authentication:** react-native-biometrics (local device auth only)
+- **File Import:** react-native-document-picker + react-native-fs
+- **No backend, no cloud, no external APIs**
+
+---
+
+## Build Requirements
+
+- Node.js >= 22.11
+- React Native CLI (`@react-native-community/cli`)
+- Android Studio with SDK installed
+- Java 17+
+- Android NDK (installed via Android Studio)
+
+---
+
+## Setup
+
+```bash
+# Install dependencies
+cd pocketledger
+npm install
+
+# Start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Run on Android (with emulator or device connected)
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## Release Build
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Use the included `release.py` script from the **parent directory** of `pocketledger/`:
 
-```sh
-bundle install
+```bash
+# From the Desktop/PocketLedger directory:
+python release.py
+
+# Skip screenshots
+python release.py --skip-screenshots
+
+# Skip build (just collect assets)
+python release.py --skip-build
+
+# Screenshots only
+python release.py --screenshots-only
+
+# Clean build before building
+python release.py --clean
 ```
 
-Then, and every time you update your native dependencies, run:
+The script outputs artifacts to a `releases/` folder:
 
-```sh
-bundle exec pod install
+```
+releases/
+  builds/
+    PocketLedger-release.apk
+    PocketLedger-release.aab
+  screenshots/
+    01-dashboard.png
+    02-transactions.png
+    ...
+  branding/
+    PocketLedger-logo.png
+  store-assets/
+    short-description.txt
+    full-description.txt
+    ...
+  docs/
+    PRIVACYPOLICY.md
+    README.md
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## App Lock
 
-# OR using Yarn
-yarn ios
+App Lock is optional. When enabled:
+
+- Uses Android's biometric authentication (fingerprint, face unlock) or device PIN
+- PocketLedger does **not** collect, store, or transmit biometric data
+- Authentication is handled entirely by the Android OS
+- Can be enabled/disabled any time from Settings
+
+---
+
+## Statement Import
+
+### Option 1: Paste Statement Text
+
+1. Copy transaction text from your bank's website
+2. Open PocketLedger → Import → Paste Statement Text
+3. Paste and tap Parse
+4. Review extracted transactions
+5. Edit categories if needed
+6. Tap Import
+
+### Option 2: Select File
+
+1. Import → Select File
+2. Choose a `.txt` or `.csv` file from your device
+3. App reads and parses it locally
+4. Review and confirm transactions
+
+> **Note:** Full PDF OCR requires additional native libraries (e.g., MLKit or Tesseract). The current parser handles plain text and CSV formats. For PDF statements, export as text from your bank's website and use the Paste method.
+
+---
+
+## Logo & App Icon
+
+Place your logo at:
+
+```
+pocketledger/assets/logo.png
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+The `release.py` script copies it to `releases/branding/`.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+For launcher icons, generate all required density variants and place them in:
 
-## Step 3: Modify your app
+```
+pocketledger/android/app/src/main/res/mipmap-*/
+```
 
-Now that you have successfully run the app, let's make changes!
+Recommended sizes:
+- `mipmap-mdpi`: 48x48
+- `mipmap-hdpi`: 72x72
+- `mipmap-xhdpi`: 96x96
+- `mipmap-xxhdpi`: 144x144
+- `mipmap-xxxhdpi`: 192x192
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+For adaptive icons, also provide a 108x108 foreground layer.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+---
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## Screenshots
 
-## Congratulations! :tada:
+Run `release.py` with an Android emulator open and the app visible:
 
-You've successfully run and modified your React Native App. :partying_face:
+```bash
+python release.py
+# or
+python release.py --screenshots-only
+```
 
-### Now what?
+Keep the emulator open with the app running. The script will prompt you to navigate to each screen before capturing.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+---
 
-# Troubleshooting
+## Permissions
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+PocketLedger requests minimal permissions:
 
-# Learn More
+| Permission | Purpose |
+|---|---|
+| `USE_BIOMETRIC` | Optional App Lock — local only |
+| `USE_FINGERPRINT` | Optional App Lock fallback — local only |
 
-To learn more about React Native, take a look at the following resources:
+**No INTERNET permission is requested.** The app is fully offline.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+---
+
+## Privacy
+
+See [PRIVACYPOLICY.md](PRIVACYPOLICY.md) for full details.
+
+Short version:
+- No data leaves your device
+- No account required
+- No analytics or telemetry
+- No bank connection
+- No biometric data stored or transmitted
+
+---
+
+## Disclaimer
+
+PocketLedger is a personal budget organization tool. It does not provide financial, tax, credit, loan, investment, or accounting advice. All calculations are estimates based on the information you enter or import.

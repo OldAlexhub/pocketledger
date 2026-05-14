@@ -1,0 +1,65 @@
+export const Colors = {
+  primary: '#1B4F72',
+  primaryDark: '#154360',
+  primaryLight: '#2E86AB',
+  accent: '#17A589',
+  accentLight: '#1ABC9C',
+
+  background: '#F0F4F8',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F8FAFB',
+  surfaceDark: '#EBF5FB',
+
+  income: '#27AE60',
+  incomeLight: '#EAFAF1',
+  expense: '#E74C3C',
+  expenseLight: '#FDEDEC',
+
+  success: '#27AE60',
+  successLight: '#EAFAF1',
+  warning: '#F39C12',
+  warningLight: '#FEF9E7',
+  danger: '#E74C3C',
+  dangerLight: '#FDEDEC',
+  info: '#2E86AB',
+  infoLight: '#EBF5FB',
+
+  textPrimary: '#1A202C',
+  textSecondary: '#4A5568',
+  textLight: '#718096',
+  textMuted: '#A0AEC0',
+  textOnPrimary: '#FFFFFF',
+
+  border: '#E2E8F0',
+  borderLight: '#F0F4F8',
+  divider: '#EDF2F7',
+
+  tabBar: '#FFFFFF',
+  tabBarActive: '#1B4F72',
+  tabBarInactive: '#A0AEC0',
+
+  overlay: 'rgba(0,0,0,0.5)',
+  shadow: 'rgba(0,0,0,0.08)',
+};
+
+export const CategoryColors: Record<string, string> = {
+  Income: '#27AE60',
+  'Rent/Mortgage': '#8E44AD',
+  Groceries: '#E67E22',
+  Gas: '#D35400',
+  'Eating Out': '#E91E63',
+  Utilities: '#2980B9',
+  Phone: '#16A085',
+  Internet: '#1ABC9C',
+  Insurance: '#8E44AD',
+  Transportation: '#2471A3',
+  Shopping: '#C0392B',
+  Entertainment: '#9B59B6',
+  Subscriptions: '#6C3483',
+  Healthcare: '#1E8BC3',
+  'Kids/Family': '#F1948A',
+  Travel: '#48C9B0',
+  'Cash Withdrawal': '#626567',
+  Fees: '#922B21',
+  Other: '#7F8C8D',
+};

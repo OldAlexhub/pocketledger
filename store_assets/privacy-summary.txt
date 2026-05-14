@@ -1,0 +1,10 @@
+PocketLedger Privacy Summary
+
+No data collection. No account required. No internet needed.
+
+- All transactions are stored only on your device
+- Statement imports are processed locally — nothing is uploaded
+- App Lock uses your device's own biometric or PIN system
+- PocketLedger does not collect, share, or transmit any user data
+- No analytics, no advertising, no tracking
+- You can delete all data at any time from Settings

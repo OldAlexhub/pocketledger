@@ -1,0 +1,23 @@
+01-dashboard.png
+Caption: Your monthly budget at a glance — income, spending, and remaining balance.
+
+02-transactions.png
+Caption: All your transactions in one place. Filter, search, and manage easily.
+
+03-budget.png
+Caption: Set your income, savings goal, and fixed bills for complete budget clarity.
+
+04-import.png
+Caption: Import bank statement text or files — processed locally, nothing uploaded.
+
+05-insights.png
+Caption: Spending insights, anomaly detection, and category breakdowns.
+
+06-subscriptions.png
+Caption: Automatically detect recurring subscriptions from your imported statements.
+
+07-savings.png
+Caption: See your savings potential with Conservative, Balanced, and Aggressive scenarios.
+
+08-settings.png
+Caption: Optional App Lock, budget settings, and data management — all private.

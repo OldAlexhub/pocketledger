@@ -1,0 +1,37 @@
+PocketLedger — Private Budget Clarity
+
+Take control of your spending without giving up your privacy. PocketLedger is a completely offline budget organization app that runs entirely on your phone. No account. No bank connection. No cloud sync. No data leaves your device.
+
+WHAT YOU CAN DO
+
+Import bank statements — Copy and paste transaction text from your bank's website, or select a text or CSV file from your device. PocketLedger reads and classifies it locally using a built-in rules engine.
+
+Understand your spending — See your income, spending, and balance at a glance. Break down spending by category and compare months side by side.
+
+Track transactions — Add income and expenses manually. Filter, search, and edit transactions by category, type, or merchant. Reclassify categories to match your habits.
+
+Plan your budget — Set your monthly income, savings goal, fixed bills, and category budgets. See a clear budget breakdown: Income minus fixed bills minus spending equals what you actually have available.
+
+Detect subscriptions — PocketLedger automatically identifies recurring charges from your imported statements. See monthly and yearly costs side by side and decide which to keep, ignore, or review.
+
+Find savings potential — Based on your imported spending patterns, PocketLedger estimates how much you could potentially save by adjusting flexible categories. Three scenarios: Conservative, Balanced, and Aggressive.
+
+Export reports — Generate a monthly spending summary as an HTML report. Export all transactions as a CSV spreadsheet. Both are shared through Android's standard sharing, so you control where they go.
+
+Optional App Lock — Protect your budget data with biometric or PIN authentication. PocketLedger does not store or transmit any biometric data. Authentication is handled entirely by your Android device.
+
+COMPLETELY PRIVATE
+
+- No account required
+- No bank connection
+- No internet required
+- No data uploaded or transmitted
+- Statement imports processed locally on your device
+- Transactions stored only on your device
+- No analytics, no advertising, no tracking
+
+IMPORTANT NOTES
+
+PocketLedger is a personal budget organization tool. It is not a bank, financial advisor, tax service, investment platform, or credit service. All calculations and estimates are based on the data you enter or import. This app does not provide financial advice.
+
+Statement import works best with plain text or CSV exports from your bank's website. Full PDF extraction is not available in this version.
