@@ -10,14 +10,11 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '../../components/Card';
 import { EmptyState } from '../../components/EmptyState';
-import { Button } from '../../components/Button';
 import { ProgressBar } from '../../components/ProgressBar';
 import {
   getTransactions,
-  getStatements,
   saveSubscriptions,
   getSubscriptions,
-  getBudget,
 } from '../../storage/storage';
 import { Transaction, Subscription, Insight } from '../../models/types';
 import {
@@ -39,18 +36,15 @@ export function InsightsScreen() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
-  const [budget, setBudget] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<InsightTab>('overview');
   const [selectedMonth, setSelectedMonth] = useState<string>(getMonthKey(today()));
 
   const load = useCallback(async () => {
-    const [txns, subs, b] = await Promise.all([
+    const [txns, subs] = await Promise.all([
       getTransactions(),
       getSubscriptions(),
-      getBudget(),
     ]);
     setTransactions(txns);
-    setBudget(b);
 
     const detectedSubs = detectSubscriptions(txns);
     // Merge status from stored subs

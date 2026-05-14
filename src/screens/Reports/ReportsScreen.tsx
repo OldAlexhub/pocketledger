@@ -12,13 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '../../components/Card';
-import { Button } from '../../components/Button';
 import {
   getTransactions,
   getStatements,
   getSubscriptions,
   getInsights,
-  getBudget,
 } from '../../storage/storage';
 import { Transaction, Statement } from '../../models/types';
 import { generateCSV, generateReportHTML } from '../../utils/reportGenerator';
@@ -37,14 +35,12 @@ export function ReportsScreen() {
   const [statements, setStatements] = useState<Statement[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(getMonthKey(today()));
   const [exporting, setExporting] = useState<string | null>(null);
-  const [budget, setBudget] = useState<any>(null);
 
   useFocusEffect(
     useCallback(() => {
-      Promise.all([getTransactions(), getStatements(), getBudget()]).then(([t, s, b]) => {
+      Promise.all([getTransactions(), getStatements()]).then(([t, s]) => {
         setTransactions(t);
         setStatements(s);
-        setBudget(b);
       });
     }, []),
   );

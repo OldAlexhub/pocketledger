@@ -1,6 +1,6 @@
 import { Transaction, Statement, Subscription, Insight } from '../models/types';
 import { getCategoryTotals } from './insights';
-import { formatDate, formatMonthYear, getMonthKey } from './dateUtils';
+import { formatMonthYear, getMonthKey } from './dateUtils';
 
 export function generateCSV(transactions: Transaction[]): string {
   const headers = ['Date', 'Type', 'Merchant', 'Description', 'Category', 'Amount', 'Source'];

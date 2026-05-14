@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import {
-  addTransactions,
-  updateTransaction,
-  getSettings,
-} from '../../storage/storage';
+import { addTransactions, updateTransaction } from '../../storage/storage';
 import { Transaction } from '../../models/types';
 import { CATEGORIES } from '../../constants/categories';
 import { CATEGORY_ICONS } from '../../constants/categories';

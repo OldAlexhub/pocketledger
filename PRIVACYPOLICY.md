@@ -127,9 +127,9 @@ If this privacy policy is updated, the updated version will be included in futur
 
 For questions about this privacy policy, contact:
 
-**Developer:** OldAlexHub  
+**Developer:** Old Alex Hub LLC  
 **Package:** com.oldalexhub.pocketledger  
-**Email:** support@oldalexhub.com
+**Email:** info@oldalexhub.com
 
 ---
 

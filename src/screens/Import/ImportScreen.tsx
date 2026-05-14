@@ -10,14 +10,13 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DocumentPicker from 'react-native-document-picker';
-import RNFS from 'react-native-fs';
 import { Card } from '../../components/Card';
-import { Button } from '../../components/Button';
-import { getStatements, deleteStatement, getSettings } from '../../storage/storage';
+import { getStatements, deleteStatement } from '../../storage/storage';
 import { Statement } from '../../models/types';
 import { formatDate, uuid } from '../../utils/dateUtils';
 import { parseStatementText, generateMockTransactions } from '../../utils/statementParser';
 import { getCategoryCorrections } from '../../storage/storage';
+import { extractTextFromPDFFile, readTextFile } from '../../utils/pdfExtractor';
 import { Colors } from '../../constants/colors';
 import { FontSize, FontWeight, Radius, Spacing } from '../../constants/theme';
 
@@ -52,16 +51,40 @@ export function ImportScreen() {
 
       setLoading(true);
 
+      const filePath = result.fileCopyUri || result.uri;
+      const fileName = result.name || 'Statement';
+      const isPDF =
+        fileName.toLowerCase().endsWith('.pdf') ||
+        (result.type?.toLowerCase().includes('pdf') ?? false);
+
       let fileText = '';
-      try {
-        const filePath = result.fileCopyUri || result.uri;
-        fileText = await RNFS.readFile(
-          filePath.startsWith('file://') ? filePath.slice(7) : filePath,
-          'utf8',
-        );
-      } catch {
-        // If we can't read the file, fall back to mock data with a note
-        fileText = '';
+      let pageInfo = '';
+
+      if (isPDF) {
+        const pdfResult = await extractTextFromPDFFile(filePath);
+        if (!pdfResult.success || !pdfResult.text.trim()) {
+          Alert.alert(
+            'PDF Could Not Be Read',
+            pdfResult.warning ||
+              'This PDF may be scanned or encrypted. Use "Paste Statement Text" to paste text copied from your bank\'s website.',
+            [{ text: 'OK' }],
+          );
+          setLoading(false);
+          return;
+        }
+        fileText = pdfResult.text;
+        if (pdfResult.pageCount > 1) {
+          pageInfo = ` (${pdfResult.pageCount} pages)`;
+        }
+        if (pdfResult.warning) {
+          Alert.alert('PDF Import Note', pdfResult.warning, [{ text: 'OK' }]);
+        }
+      } else {
+        try {
+          fileText = await readTextFile(filePath);
+        } catch {
+          fileText = '';
+        }
       }
 
       const corrections = await getCategoryCorrections();
@@ -81,7 +104,7 @@ export function ImportScreen() {
       const statementId = uuid();
       navigation.navigate('ImportReview', {
         statementId,
-        fileName: result.name || 'Statement',
+        fileName: fileName + pageInfo,
         pending,
       });
     } catch (err: any) {
@@ -163,7 +186,7 @@ export function ImportScreen() {
               </View>
               <View style={styles.importOptionInfo}>
                 <Text style={styles.importOptionTitle}>Select File</Text>
-                <Text style={styles.importOptionSub}>Import a .txt, .csv, or bank statement file from your device</Text>
+                <Text style={styles.importOptionSub}>Import a .pdf, .txt, or .csv bank statement from your device</Text>
               </View>
               <Text style={styles.importOptionArrow}>›</Text>
             </TouchableOpacity>

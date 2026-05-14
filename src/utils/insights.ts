@@ -1,4 +1,4 @@
-import { Transaction, Insight, Subscription, InsightType } from '../models/types';
+import { Transaction, Insight, Subscription } from '../models/types';
 import { Category } from '../constants/categories';
 import { getMonthKey, uuid } from './dateUtils';
 
@@ -174,7 +174,7 @@ export function generateInsights(transactions: Transaction[]): Insight[] {
   }
 
   // --- Subscriptions insight ---
-  const subSpend = lastStats.byCategory['Subscriptions'] || 0;
+  const subSpend = lastStats.byCategory.Subscriptions || 0;
   if (subSpend > 50) {
     insights.push({
       id: uuid(),

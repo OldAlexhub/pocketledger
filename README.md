@@ -2,7 +2,7 @@
 
 **Private offline budget clarity for Android.**
 
-Import statements, understand spending, detect subscriptions, and find your savings potential privately on your phone.
+Import bank statements, understand your spending, detect subscriptions, and find savings potential — entirely on your device. No backend. No account. No cloud.
 
 ---
 
@@ -10,15 +10,16 @@ Import statements, understand spending, detect subscriptions, and find your savi
 
 PocketLedger is a local-only budget organization app for Android. It helps you:
 
-- Import bank statement text or files and classify transactions locally
+- Import bank statements from PDF, CSV, or plain text files — or paste statement text directly
+- Classify transactions into 19 spending categories automatically
 - Track income vs. spending by month and category
-- Detect recurring subscriptions
-- Set budgets and track fixed bills
-- Identify spending anomalies and savings opportunities
-- Export reports as CSV or HTML
+- Detect recurring subscriptions and estimate their yearly cost
+- Set a monthly budget and track fixed bills
+- Identify spending anomalies and savings opportunities (3 scenarios)
+- Export reports as CSV or HTML via Android's share sheet
 - Lock the app with your device's biometric or PIN
 
-**Everything runs on your device. No backend. No account. No cloud sync.**
+**Everything runs on your device. No backend. No account. No cloud sync. No internet required.**
 
 ---
 
@@ -44,13 +45,15 @@ com.oldalexhub.pocketledger
 
 ## Tech Stack
 
-- **Framework:** Bare React Native 0.85
-- **Platform:** Android only
-- **Storage:** AsyncStorage (local, on-device)
-- **Navigation:** React Navigation v7
-- **Authentication:** react-native-biometrics (local device auth only)
-- **File Import:** react-native-document-picker + react-native-fs
-- **No backend, no cloud, no external APIs**
+| Layer | Library |
+|---|---|
+| Framework | Bare React Native 0.85.3 — Android only |
+| Navigation | React Navigation v7 (bottom tabs + native stack) |
+| Storage | AsyncStorage — local, on-device only |
+| File import | react-native-document-picker + react-native-fs |
+| PDF extraction | pako (pure-JS zlib) — parses BT/ET content streams, handles FlateDecode compression |
+| App Lock | react-native-biometrics — local Android auth only |
+| No backend, no cloud, no external APIs ||
 
 ---
 
@@ -58,9 +61,9 @@ com.oldalexhub.pocketledger
 
 - Node.js >= 22.11
 - React Native CLI (`@react-native-community/cli`)
-- Android Studio with SDK installed
-- Java 17+
-- Android NDK (installed via Android Studio)
+- Android Studio with Android SDK installed
+- Java JDK 17+ (also needed for `keytool` — used by `release.py`)
+- Android NDK (installed via Android Studio's SDK Manager)
 
 ---
 
@@ -74,7 +77,7 @@ npm install
 # Start Metro bundler
 npm start
 
-# Run on Android (with emulator or device connected)
+# Run on Android (emulator or device connected)
 npm run android
 ```
 
@@ -82,26 +85,45 @@ npm run android
 
 ## Release Build
 
-Use the included `release.py` script from the **parent directory** of `pocketledger/`:
+Use the `release.py` script from the **parent directory** (`Desktop/PocketLedger/`):
 
 ```bash
-# From the Desktop/PocketLedger directory:
+# Full build (generates keystore on first run, then builds APK + AAB)
 python release.py
 
-# Skip screenshots
+# Build without capturing screenshots
 python release.py --skip-screenshots
 
-# Skip build (just collect assets)
+# Collect existing artifacts only (no Gradle build)
 python release.py --skip-build
 
-# Screenshots only
+# Screenshots only (app must be open on emulator)
 python release.py --screenshots-only
 
-# Clean build before building
+# Set up (or regenerate) the release signing keystore only
+python release.py --setup-signing
+
+# Clean build
 python release.py --clean
 ```
 
-The script outputs artifacts to a `releases/` folder:
+### Release Signing
+
+On the **first run**, `release.py` automatically generates a release keystore using
+`keytool` (bundled with the JDK). You will be prompted for a password once. The
+generated files are:
+
+```
+pocketledger/android/keystore.properties       ← credentials (gitignored)
+pocketledger/android/app/pocketledger-release.keystore  ← keystore (gitignored)
+```
+
+> **Back these up.** Losing the keystore means you cannot push updates to the Play Store.
+
+Both files are added to `android/.gitignore` automatically. `build.gradle` reads them
+at build time — no manual editing required.
+
+### Output Structure
 
 ```
 releases/
@@ -114,6 +136,11 @@ releases/
     ...
   branding/
     PocketLedger-logo.png
+    ic_launcher_512.png
+    icons/
+      mipmap-mdpi/
+      mipmap-hdpi/
+      ...
   store-assets/
     short-description.txt
     full-description.txt
@@ -125,6 +152,29 @@ releases/
 
 ---
 
+## Statement Import
+
+### Option 1 — Select File
+
+1. Import → **Select File**
+2. Choose a `.pdf`, `.txt`, or `.csv` bank statement from your device
+3. The app reads and parses it locally on-device
+4. Review extracted transactions, edit categories if needed
+5. Tap **Import**
+
+PDF support: the app parses text-based (digitally generated) PDFs using a pure-JS
+FlateDecode decompressor. Scanned PDFs (image-only) will prompt you to use the
+Paste method instead.
+
+### Option 2 — Paste Statement Text
+
+1. Copy transaction text from your bank's website
+2. Import → **Paste Statement Text**
+3. Paste and tap **Parse**
+4. Review and confirm transactions
+
+---
+
 ## App Lock
 
 App Lock is optional. When enabled:
@@ -132,70 +182,7 @@ App Lock is optional. When enabled:
 - Uses Android's biometric authentication (fingerprint, face unlock) or device PIN
 - PocketLedger does **not** collect, store, or transmit biometric data
 - Authentication is handled entirely by the Android OS
-- Can be enabled/disabled any time from Settings
-
----
-
-## Statement Import
-
-### Option 1: Paste Statement Text
-
-1. Copy transaction text from your bank's website
-2. Open PocketLedger → Import → Paste Statement Text
-3. Paste and tap Parse
-4. Review extracted transactions
-5. Edit categories if needed
-6. Tap Import
-
-### Option 2: Select File
-
-1. Import → Select File
-2. Choose a `.txt` or `.csv` file from your device
-3. App reads and parses it locally
-4. Review and confirm transactions
-
-> **Note:** Full PDF OCR requires additional native libraries (e.g., MLKit or Tesseract). The current parser handles plain text and CSV formats. For PDF statements, export as text from your bank's website and use the Paste method.
-
----
-
-## Logo & App Icon
-
-Place your logo at:
-
-```
-pocketledger/assets/logo.png
-```
-
-The `release.py` script copies it to `releases/branding/`.
-
-For launcher icons, generate all required density variants and place them in:
-
-```
-pocketledger/android/app/src/main/res/mipmap-*/
-```
-
-Recommended sizes:
-- `mipmap-mdpi`: 48x48
-- `mipmap-hdpi`: 72x72
-- `mipmap-xhdpi`: 96x96
-- `mipmap-xxhdpi`: 144x144
-- `mipmap-xxxhdpi`: 192x192
-
-For adaptive icons, also provide a 108x108 foreground layer.
-
----
-
-## Screenshots
-
-Run `release.py` with an Android emulator open and the app visible:
-
-```bash
-python release.py
-# or
-python release.py --screenshots-only
-```
-
-Keep the emulator open with the app running. The script will prompt you to navigate to each screen before capturing.
+- Can be enabled or disabled any time from Settings
 
 ---
 
@@ -208,13 +195,13 @@ PocketLedger requests minimal permissions:
 | `USE_BIOMETRIC` | Optional App Lock — local only |
 | `USE_FINGERPRINT` | Optional App Lock fallback — local only |
 
-**No INTERNET permission is requested.** The app is fully offline.
+**No `INTERNET` permission is requested.** The app is fully offline.
 
 ---
 
 ## Privacy
 
-See [PRIVACYPOLICY.md](PRIVACYPOLICY.md) for full details.
+See [PRIVACYPOLICY.md](PRIVACYPOLICY.md) for the full policy.
 
 Short version:
 - No data leaves your device
@@ -227,4 +214,6 @@ Short version:
 
 ## Disclaimer
 
-PocketLedger is a personal budget organization tool. It does not provide financial, tax, credit, loan, investment, or accounting advice. All calculations are estimates based on the information you enter or import.
+PocketLedger is a personal budget organization tool. It does not provide financial,
+tax, credit, loan, investment, or accounting advice. All calculations are estimates
+based on the information you enter or import.

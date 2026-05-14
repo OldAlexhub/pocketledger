@@ -1,10 +1,7 @@
 import { PendingTransaction } from '../models/types';
 import { classifyTransaction } from './classifier';
-import { uuid } from './dateUtils';
 import { Category } from '../constants/categories';
 
-// Regex patterns to extract transaction lines from pasted statement text
-const AMOUNT_PATTERN = /[-+]?\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/;
 const DATE_PATTERNS = [
   /(\d{1,2}\/\d{1,2}\/\d{2,4})/,
   /(\d{4}-\d{2}-\d{2})/,
@@ -23,10 +20,10 @@ function parseDate(raw: string): string {
   // MM/DD/YYYY or MM/DD/YY
   const slashMatch = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
   if (slashMatch) {
-    let year = parseInt(slashMatch[3]);
+    let year = parseInt(slashMatch[3], 10);
     if (year < 100) year += year < 50 ? 2000 : 1900;
-    const month = String(parseInt(slashMatch[1])).padStart(2, '0');
-    const day = String(parseInt(slashMatch[2])).padStart(2, '0');
+    const month = String(parseInt(slashMatch[1], 10)).padStart(2, '0');
+    const day = String(parseInt(slashMatch[2], 10)).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
@@ -43,7 +40,7 @@ function parseDate(raw: string): string {
   const monthMatch = cleaned.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})(?:,?\s*(\d{4}))?/i);
   if (monthMatch) {
     const month = monthNames[monthMatch[1].toLowerCase()];
-    const day = String(parseInt(monthMatch[2])).padStart(2, '0');
+    const day = String(parseInt(monthMatch[2], 10)).padStart(2, '0');
     const year = monthMatch[3] || String(new Date().getFullYear());
     return `${year}-${month}-${day}`;
   }

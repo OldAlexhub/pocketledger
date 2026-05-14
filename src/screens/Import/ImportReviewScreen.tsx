@@ -22,7 +22,7 @@ import {
 import { Transaction, PendingTransaction } from '../../models/types';
 import { CATEGORIES, CATEGORY_ICONS } from '../../constants/categories';
 import { Colors } from '../../constants/colors';
-import { FontSize, FontWeight, Radius, Spacing } from '../../constants/theme';
+import { FontSize, FontWeight, Spacing } from '../../constants/theme';
 import { formatShortDate, getMonthLabel, uuid, today } from '../../utils/dateUtils';
 
 type RouteParams = {

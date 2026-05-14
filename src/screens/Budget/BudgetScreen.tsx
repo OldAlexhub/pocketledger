@@ -17,7 +17,6 @@ import { getBudget, saveBudget, getBills, saveBills } from '../../storage/storag
 import { Budget, Bill } from '../../models/types';
 import { Colors } from '../../constants/colors';
 import { FontSize, FontWeight, Radius, Spacing } from '../../constants/theme';
-import { CATEGORIES, CATEGORY_ICONS } from '../../constants/categories';
 import { uuid } from '../../utils/dateUtils';
 
 export function BudgetScreen() {
@@ -67,7 +66,7 @@ export function BudgetScreen() {
       id: uuid(),
       name: billName.trim(),
       amount: amt,
-      dueDay: parseInt(billDueDay) || 1,
+      dueDay: parseInt(billDueDay, 10) || 1,
       category: 'Utilities',
       recurring: true,
       paidThisMonth: false,
@@ -160,7 +159,7 @@ export function BudgetScreen() {
               keyboardType="number-pad"
               value={String(budget.monthStartDay)}
               onChangeText={v => {
-                const d = parseInt(v) || 1;
+                const d = parseInt(v, 10) || 1;
                 setBudget(b => ({ ...b, monthStartDay: Math.min(28, Math.max(1, d)) }));
               }}
               maxLength={2}

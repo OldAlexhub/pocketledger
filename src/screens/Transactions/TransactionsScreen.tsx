@@ -9,39 +9,30 @@ import {
   Alert,
   Modal,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CategoryBadge } from '../../components/CategoryBadge';
 import { AmountText } from '../../components/AmountText';
 import { EmptyState } from '../../components/EmptyState';
-import { Button } from '../../components/Button';
-import {
-  getTransactions,
-  deleteTransaction,
-  getSettings,
-} from '../../storage/storage';
+import { getTransactions, deleteTransaction } from '../../storage/storage';
 import { Transaction } from '../../models/types';
 import { formatShortDate, getMonthKey, getMonthsFromTransactions, monthKeyToLabel } from '../../utils/dateUtils';
 import { Colors } from '../../constants/colors';
 import { FontSize, FontWeight, Radius, Spacing } from '../../constants/theme';
-import { CATEGORIES } from '../../constants/categories';
 import { AddTransactionScreen } from './AddTransactionScreen';
 
 export function TransactionsScreen() {
-  const navigation = useNavigation<any>();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [search, setSearch] = useState('');
   const [filterMonth, setFilterMonth] = useState<string | 'all'>('all');
-  const [filterCategory, setFilterCategory] = useState<string | 'all'>('all');
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editTxn, setEditTxn] = useState<Transaction | undefined>();
-  const [currencySymbol, setCurrencySymbol] = useState('$');
+  const currencySymbol = '$';
 
   const load = useCallback(async () => {
-    const [txns, settings] = await Promise.all([getTransactions(), getSettings()]);
+    const txns = await getTransactions();
     setTransactions(txns.sort((a, b) => b.date.localeCompare(a.date)));
-    setCurrencySymbol('$');
   }, []);
 
   useFocusEffect(
@@ -56,7 +47,6 @@ export function TransactionsScreen() {
   const filtered = useMemo(() => {
     return transactions.filter(t => {
       if (filterMonth !== 'all' && getMonthKey(t.date) !== filterMonth) return false;
-      if (filterCategory !== 'all' && t.category !== filterCategory) return false;
       if (filterType !== 'all' && t.type !== filterType) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -64,31 +54,26 @@ export function TransactionsScreen() {
       }
       return true;
     });
-  }, [transactions, filterMonth, filterCategory, filterType, search]);
+  }, [transactions, filterMonth, filterType, search]);
 
-  const handleDelete = (txn: Transaction) => {
-    Alert.alert('Delete Transaction', `Delete "${txn.merchant}" for ${currencySymbol}${txn.amount.toFixed(2)}?`, [
-      { text: 'Cancel', style: 'cancel' },
+  const handleLongPress = (txn: Transaction) => {
+    Alert.alert(txn.merchant, `${txn.type === 'income' ? '+' : '-'}${currencySymbol}${txn.amount.toFixed(2)}`, [
+      { text: 'Edit', onPress: () => { setEditTxn(txn); setShowAddModal(true); } },
       {
-        text: 'Delete',
-        style: 'destructive',
+        text: 'Delete', style: 'destructive',
         onPress: async () => {
           await deleteTransaction(txn.id);
           load();
         },
       },
+      { text: 'Cancel', style: 'cancel' },
     ]);
-  };
-
-  const handleEdit = (txn: Transaction) => {
-    setEditTxn(txn);
-    setShowAddModal(true);
   };
 
   const renderItem = ({ item }: { item: Transaction }) => (
     <TouchableOpacity
       style={styles.txnItem}
-      onLongPress={() => handleEdit(item)}
+      onLongPress={() => handleLongPress(item)}
       activeOpacity={0.75}>
       <View style={styles.txnLeft}>
         <View style={styles.txnIconContainer}>

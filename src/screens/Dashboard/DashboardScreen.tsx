@@ -20,15 +20,10 @@ import {
   getBills,
 } from '../../storage/storage';
 import { Transaction, Budget, Bill, Statement } from '../../models/types';
-import {
-  getMonthKey,
-  formatCurrency,
-  today,
-  formatShortDate,
-} from '../../utils/dateUtils';
+import { getMonthKey, today } from '../../utils/dateUtils';
 import { getCategoryTotals } from '../../utils/insights';
 import { Colors } from '../../constants/colors';
-import { FontSize, FontWeight, Radius, Shadow, Spacing } from '../../constants/theme';
+import { FontSize, FontWeight, Radius, Spacing } from '../../constants/theme';
 import { CATEGORY_ICONS } from '../../constants/categories';
 
 export function DashboardScreen() {

@@ -23,6 +23,7 @@ function base64ToUint8Array(b64: string): Uint8Array {
   const len = clean.length;
   const out = new Uint8Array(Math.floor(len * 0.75));
   let ptr = 0;
+  /* eslint-disable no-bitwise */
   for (let i = 0; i < len; i += 4) {
     const c0 = B64_CHARS.indexOf(clean[i]);
     const c1 = B64_CHARS.indexOf(clean[i + 1]);
@@ -32,6 +33,7 @@ function base64ToUint8Array(b64: string): Uint8Array {
     if (clean[i + 2] !== '=') out[ptr++] = ((c1 & 0xf) << 4) | (c2 >> 2);
     if (clean[i + 3] !== '=') out[ptr++] = ((c2 & 0x3) << 6) | c3;
   }
+  /* eslint-enable no-bitwise */
   return out.slice(0, ptr);
 }
 
@@ -96,11 +98,7 @@ function decodeHexString(hex: string): string {
 
 function extractTextFromContentStream(stream: string): string {
   const lines: string[] = [];
-  let inBT = false;
-  let currentY = 0;
-  let lineBuffer = '';
 
-  // Split into tokens by whitespace but keep strings intact
   // Process BT/ET blocks
   const btRegex = /BT([\s\S]*?)ET/g;
   let btMatch: RegExpExecArray | null;
@@ -326,7 +324,7 @@ export function extractTextFromPDFBase64(base64Content: string): PDFExtractionRe
 
     // Count pages
     const pageCountMatch = pdfString.match(/\/Count\s+(\d+)/);
-    const pageCount = pageCountMatch ? parseInt(pageCountMatch[1]) : 1;
+    const pageCount = pageCountMatch ? parseInt(pageCountMatch[1], 10) : 1;
 
     // Parse streams
     const streams = parsePDFStreams(pdfString);
@@ -337,13 +335,6 @@ export function extractTextFromPDFBase64(base64Content: string): PDFExtractionRe
       let streamContent = '';
 
       if (stream.filters.includes('FlateDecode') || stream.filters.includes('Fl')) {
-        // Compressed stream — extract raw bytes and decompress
-        // We need to find the binary data in the original bytes
-        // Find this stream's position
-        const streamMarker = 'stream\r\n';
-        const altMarker = 'stream\n';
-
-        // Look for BT markers even in compressed attempt
         // Try to extract raw bytes for this stream
         let rawStart = -1;
         const streamPos = pdfString.indexOf(stream.data.substring(0, 20));
